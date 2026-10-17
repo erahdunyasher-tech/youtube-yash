@@ -7,6 +7,7 @@ import com.ytlibre.app.data.model.SearchResultItem
 import com.ytlibre.app.data.remote.NetworkModule
 import com.ytlibre.app.ui.common.AppResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
@@ -33,7 +34,9 @@ class YouTubeRepositoryTest {
     private lateinit var server: MockWebServer
     private lateinit var network: NetworkModule
     private lateinit var repository: YouTubeRepository
-    private lateinit var testDispatcher: UnconfinedTestDispatcher
+    // UnconfinedTestDispatcher est une FONCTION usine (kotlinx-coroutines-test)
+    // et non une classe : le type exposé est TestDispatcher.
+    private lateinit var testDispatcher: TestDispatcher
 
     @Before
     fun setUp() {
