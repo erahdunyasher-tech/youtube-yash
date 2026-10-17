@@ -3,6 +3,7 @@ package com.ytlibre.app.util
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -73,11 +74,14 @@ object Formatters {
         }
     }
 
-    /** « 12 mars 2024 ». */
+    /** « 12 mars 2024 ». LocalDate.ofInstant demande l'API 34 : on utilise
+     *  LocalDateTime.ofInstant (disponible depuis Android 8 / API 26). */
     fun formatDate(isoDate: String?): String {
         val instant = parseInstant(isoDate) ?: return ""
         return runCatching {
-            LocalDate.ofInstant(instant, ZoneId.systemDefault()).format(dateFormatter)
+            LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+                .toLocalDate()
+                .format(dateFormatter)
         }.getOrDefault("")
     }
 

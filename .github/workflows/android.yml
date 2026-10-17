@@ -52,17 +52,12 @@ jobs:
         working-directory: android
         run: gradle --no-daemon test --stacktrace
 
-      # Le lint reste informatif (bloc continue-on-error) : il ne doit pas
-      # masquer un échec réel du build ni le bloquer sur des avertissements.
-      - name: Lint
-        continue-on-error: true
-        working-directory: android
-        run: gradle --no-daemon lintDebug
-
       - name: Assemble debug APK
         working-directory: android
         run: gradle --no-daemon assembleDebug --stacktrace
 
+      # Le lint est exécuté en dernier et reste bloquant : l'APK est déjà
+      # téléversé, on obtient donc à la fois l'artefact et un signal qualité.
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
@@ -70,3 +65,7 @@ jobs:
           path: android/app/build/outputs/apk/debug/*.apk
           retention-days: 30
           if-no-files-found: error
+
+      - name: Lint
+        working-directory: android
+        run: gradle --no-daemon lintDebug
