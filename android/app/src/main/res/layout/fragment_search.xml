@@ -84,7 +84,7 @@
         android:paddingEnd="12dp"
         android:paddingBottom="6dp"
         android:textAppearance="?attr/textAppearanceBodySmall"
-        android:textColor="?attr/onColorSecondaryContainer"
+        android:textColor="?attr/colorOnSecondaryContainer"
         android:visibility="gone" />
 
     <HorizontalScrollView
