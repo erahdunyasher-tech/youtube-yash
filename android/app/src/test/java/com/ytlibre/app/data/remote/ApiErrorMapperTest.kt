@@ -15,14 +15,27 @@ import retrofit2.Response
  */
 class ApiErrorMapperTest {
 
+    /**
+     * Construit une réponse d'erreur rétographique.
+     * Retrofit 2.11 n'expose plus `Response.Builder` : on assemble la réponse
+     * HTTP brute (okhttp) puis on la passe à `Response.error(body, rawResponse)`,
+     * seule fabrique qui accepte des en-têtes personnalisés (Retry-After, etc.).
+     */
     private fun httpException(code: Int, body: String, headers: Map<String, String> = emptyMap()): HttpException {
-        val builder = Response.Builder()
+        val rawResponse = okhttp3.Response.Builder()
+            .request(
+                okhttp3.Request.Builder()
+                    .url("https://www.googleapis.com/youtube/v3/search")
+                    .build()
+            )
+            .protocol(okhttp3.Protocol.HTTP_1_1)
             .code(code)
             .message("HTTP $code")
-            .protocol(okhttp3.Protocol.HTTP_1_1)
-            .body(body.toResponseBody("application/json".toMediaType()))
-        headers.forEach { (key, value) -> builder.header(key, value) }
-        return HttpException(builder.build())
+            .apply { headers.forEach { (name, value) -> header(name, value) } }
+            .build()
+
+        val errorBody = body.toResponseBody("application/json".toMediaType())
+        return HttpException(Response.error<Any>(errorBody, rawResponse))
     }
 
     @Test
