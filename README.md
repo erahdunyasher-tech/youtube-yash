@@ -43,7 +43,7 @@ mode sombre et Picture-in-Picture.
 | Picture-in-Picture | Bouton dédié + bascule automatique à la sortie de l'application si la vidéo est en lecture (Android 8+ ; support OEM variable) |
 | Favoris | Ajout/retrait depuis l'écran de lecture, persistance locale (Room) |
 | Historique | Enregistrement automatique des vidéos regardées, taille configurable, purge manuelle |
-| Robustesse | Cache mémoire TTL (5 min) + cache HTTP disque (10 Mo) pour économiser le quota, messages d'erreur contextualisés (quota, clé invalide, réseau, 429) |
+| Robustesse | Cache **persistant** des recherches (Room, survit au redémarrage), cache mémoire TTL (5 min, 60 min pour les tendances) + cache HTTP disque (10 Mo), repli sur cache local en cas de quota épuisé ou hors ligne, messages d'erreur contextualisés (quota, clé invalide, réseau, 429) |
 | Confidentialité | Aucune télémétrie, aucun compte, aucune donnée transmise à un tiers en dehors de l'API YouTube |
 
 ### Arborescence (principaux fichiers)
@@ -140,8 +140,13 @@ Architecture en couches, sans dépendance inutile, testable et remplaçable :
 6. Copier la clé (elle commence par `AIza…`).
 
 > Le quota gratuit par défaut est de **10 000 unités/jour** (la recherche coûte 100 unités
-> par requête, `videos.list` et `channels.list` 1 unité). L'application limite les appels
-> grâce au cache mémoire et au cache HTTP.
+> par requête, `videos.list` et `channels.list` 1 unité). L'application limite les appels :
+>
+> * cache **persistant** des recherches (Room) — une recherche déjà effectuée est resservie
+>   sans aucune requête réseau, même après redémarrage de l'application ou hors ligne ;
+> * cache mémoire (5 min, 60 min pour les tendances) + cache HTTP disque ;
+> * en cas de quota épuisé ou de réseau indisponible, la dernière page 1 en cache local
+>   est affichée avec un bandeau explicite (0 unité consommée).
 
 ### 4.2 Mode 1 — clé API sur l'appareil (usage personnel)
 
@@ -314,7 +319,7 @@ Pour publier le site de documentation : **Settings → Pages → Source : GitHub
 |---|---|
 | `FormattersTest` | parsing des durées ISO-8601, formatage des durées, vues, dates relatives, normalisation des requêtes |
 | `ApiErrorMapperTest` | quota épuisé, limite quotidienne, clé invalide, 429 + `Retry-After`, erreur 5xx, erreurs réseau |
-| `YouTubeRepositoryTest` | requête envoyée (paramètres `key`, `type`, `q`), mapping des DTO, pagination, erreur quota, cache mémoire (2ᵉ appel sans requête réseau) |
+| `YouTubeRepositoryTest` | requête envoyée (paramètres `key`, `type`, `q`), mapping des DTO, pagination, erreur quota, cache mémoire (2ᵉ appel sans requête réseau), cache persistant (nouvelle instance servie sans requête réseau) |
 
 Exécution : `./gradlew test` — rapport dans `android/app/build/reports/tests/testDebugUnitTest/index.html`.
 

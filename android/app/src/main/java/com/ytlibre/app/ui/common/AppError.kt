@@ -21,7 +21,9 @@ sealed class AppError(open val userMessage: String) {
     /** Quota quotidien de l'API YouTube épuisé (403 quotaExceeded / dailyLimitExceeded). */
     data class QuotaExceeded(val resetHint: String? = null) : AppError(
         resetHint?.let { "Quota de l'API YouTube épuisé. $it" }
-            ?: "Quota de l'API YouTube épuisé. Réessayez demain ou utilisez un proxy serveur."
+            ?: "Quota de l'API YouTube épuisé. Le quota quotidien se renouvelle chaque jour " +
+                "(minuit, heure de Pacifique). Vos favoris, votre historique et vos recherches " +
+                "récentes restent consultables."
     )
 
     /** Quota dépassé par seconde (429). */

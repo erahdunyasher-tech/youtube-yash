@@ -101,8 +101,39 @@ class SearchFragment : Fragment() {
                 launch { viewModel.state.collect { render(it) } }
                 launch { viewModel.recentQueries.collect { renderRecent(it) } }
                 launch { viewModel.hasMore.collect { binding.btnLoadMore.visibility = if (it) View.VISIBLE else View.GONE } }
+                launch {
+                    combineCachedBanner()
+                }
             }
         }
+    }
+
+    private suspend fun combineCachedBanner() {
+        kotlinx.coroutines.flow.combine(viewModel.cachedAt, viewModel.showingStale) { cachedAt, stale ->
+            cachedAt to stale
+        }.collect { (cachedAt, stale) ->
+            renderCacheBanner(cachedAt, stale)
+        }
+    }
+
+    private fun renderCacheBanner(cachedAt: Long?, showingStale: Boolean) {
+        if (cachedAt == null) {
+            binding.textCacheBanner.visibility = View.GONE
+            return
+        }
+        val age = formatAge(System.currentTimeMillis() - cachedAt)
+        binding.textCacheBanner.text = getString(
+            if (showingStale) R.string.search_cache_stale_banner else R.string.search_cache_banner,
+            age
+        )
+        binding.textCacheBanner.visibility = View.VISIBLE
+    }
+
+    private fun formatAge(millis: Long): String = when {
+        millis < 60_000L -> "à l'instant"
+        millis < 3_600_000L -> "il y a ${millis / 60_000} min"
+        millis < 86_400_000L -> "il y a ${millis / 3_600_000} h"
+        else -> "il y a ${millis / 86_400_000} j"
     }
 
     private fun render(state: UiState<List<SearchResultItem>>) {

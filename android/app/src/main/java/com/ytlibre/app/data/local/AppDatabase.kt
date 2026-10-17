@@ -38,6 +38,18 @@ data class HistoryEntity(
     val watchedAt: Long
 )
 
+/**
+ * Cache persistant des résultats de recherche (page 1).
+ * Permet de répondre à une recherche déjà effectuée — même après
+ * redémarrage de l'app ou hors ligne — sans consommer de quota API.
+ */
+@Entity(tableName = "search_cache")
+data class SearchCacheEntity(
+    @PrimaryKey val cacheKey: String,
+    val payload: String,
+    val createdAt: Long
+)
+
 // ---------------------------------------------------------------------------
 // DAO
 // ---------------------------------------------------------------------------
@@ -61,6 +73,23 @@ interface FavoriteDao {
     suspend fun deleteById(videoId: String)
 
     @Query("DELETE FROM favorites")
+    suspend fun clear()
+}
+
+@Dao
+interface SearchCacheDao {
+
+    @Query("SELECT * FROM search_cache WHERE cacheKey = :cacheKey")
+    suspend fun get(cacheKey: String): SearchCacheEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun put(entity: SearchCacheEntity)
+
+    @Query("DELETE FROM search_cache WHERE cacheKey NOT IN " +
+        "(SELECT cacheKey FROM search_cache ORDER BY createdAt DESC LIMIT :keep)")
+    suspend fun prune(keep: Int)
+
+    @Query("DELETE FROM search_cache")
     suspend fun clear()
 }
 
@@ -94,11 +123,12 @@ interface HistoryDao {
 // à ce stade — fallbackToDestructiveMigration). Cela évite surtout la course
 // lecture/écriture du fichier de schéma entre les variantes debug/release.
 @Database(
-    entities = [FavoriteEntity::class, HistoryEntity::class],
-    version = 1,
+    entities = [FavoriteEntity::class, HistoryEntity::class, SearchCacheEntity::class],
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun favoriteDao(): FavoriteDao
     abstract fun historyDao(): HistoryDao
+    abstract fun searchCacheDao(): SearchCacheDao
 }

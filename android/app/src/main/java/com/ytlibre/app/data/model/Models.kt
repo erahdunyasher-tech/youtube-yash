@@ -50,7 +50,9 @@ sealed interface SearchResultItem {
 data class SearchPage(
     val items: List<SearchResultItem> = emptyList(),
     val nextPageToken: String? = null,
-    val totalResults: Int = 0
+    val totalResults: Int = 0,
+    /** Date (epoch ms) si la page provient du cache local, sinon null. */
+    val cachedAt: Long? = null
 )
 
 enum class SearchFilter(val apiType: String) {

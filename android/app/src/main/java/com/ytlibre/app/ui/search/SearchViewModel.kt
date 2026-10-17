@@ -38,6 +38,14 @@ class SearchViewModel(
     private val _hasMore = MutableStateFlow(false)
     val hasMore: StateFlow<Boolean> = _hasMore.asStateFlow()
 
+    /** Instant (epoch ms) des résultats affichés s'ils viennent du cache local. */
+    private val _cachedAt = MutableStateFlow<Long?>(null)
+    val cachedAt: StateFlow<Long?> = _cachedAt.asStateFlow()
+
+    /** Vrai lorsque les résultats affichés proviennent du cache (repli réseau/quota). */
+    private val _showingStale = MutableStateFlow(false)
+    val showingStale: StateFlow<Boolean> = _showingStale.asStateFlow()
+
     private var searchJob: Job? = null
     private var nextPageToken: String? = null
 
@@ -47,6 +55,8 @@ class SearchViewModel(
         if (raw.isBlank()) {
             _state.value = UiState.Idle
             nextPageToken = null
+            _cachedAt.value = null
+            _showingStale.value = false
             return
         }
         searchJob = viewModelScope.launch {
@@ -90,6 +100,8 @@ class SearchViewModel(
         if (query.isBlank()) return
         if (reset) {
             _state.value = UiState.Loading
+            _cachedAt.value = null
+            _showingStale.value = false
         }
         when (val result = repository.search(query, _filter.value, pageToken)) {
             is AppResult.Success -> {
@@ -97,10 +109,23 @@ class SearchViewModel(
                 _hasMore.value = !result.data.nextPageToken.isNullOrBlank()
                 val previous = if (reset) emptyList() else (_state.value as? UiState.Success)?.data.orEmpty()
                 _state.value = UiState.Success(previous + result.data.items)
+                if (reset) _cachedAt.value = result.data.cachedAt
             }
 
             is AppResult.Failure -> {
-                if (reset) _state.value = UiState.Error(result.error)
+                if (reset) {
+                    // Repli quota / réseau : on affiche la page 1 du cache local
+                    // plutôt qu'une erreur sèche (0 unité de quota consommée).
+                    val stale = repository.cachedSearchPage(query, _filter.value)
+                    if (stale != null) {
+                        _state.value = UiState.Success(stale.first.items)
+                        _cachedAt.value = stale.second
+                        _showingStale.value = true
+                        _hasMore.value = false
+                    } else {
+                        _state.value = UiState.Error(result.error)
+                    }
+                }
             }
         }
     }

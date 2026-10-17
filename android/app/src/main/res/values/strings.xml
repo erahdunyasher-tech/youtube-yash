@@ -27,6 +27,8 @@
     <!-- Recherche -->
     <string name="search_hint">Rechercher sur YouTube</string>
     <string name="search_empty">Aucun résultat pour cette recherche.</string>
+    <string name="search_cache_banner">Résultats chargés depuis le cache local (%1$s) — 0 unité de quota consommée.</string>
+    <string name="search_cache_stale_banner">Réseau ou quota indisponible : résultats du cache local affichés (%1$s).</string>
 
     <!-- Actions -->
     <string name="action_retry">Réessayer</string>

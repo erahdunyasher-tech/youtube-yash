@@ -1,5 +1,7 @@
 package com.ytlibre.app.data.repository
 
+import com.ytlibre.app.data.local.SearchCacheDao
+import com.ytlibre.app.data.local.SearchCacheEntity
 import com.ytlibre.app.data.model.SearchFilter
 import com.ytlibre.app.data.model.SearchResultItem
 import com.ytlibre.app.data.remote.NetworkModule
@@ -11,6 +13,7 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -28,18 +31,21 @@ class YouTubeRepositoryTest {
     val temporaryFolder = TemporaryFolder()
 
     private lateinit var server: MockWebServer
+    private lateinit var network: NetworkModule
     private lateinit var repository: YouTubeRepository
+    private lateinit var testDispatcher: UnconfinedTestDispatcher
 
     @Before
     fun setUp() {
         server = MockWebServer()
         server.start()
-        val network = NetworkModule(
+        network = NetworkModule(
             cacheDirectory = temporaryFolder.newFolder("cache"),
             apiKeyProvider = { "TEST_API_KEY" },
             proxyUrlProvider = { server.url("/youtube/v3/").toString() }
         )
-        repository = YouTubeRepository(network, UnconfinedTestDispatcher())
+        testDispatcher = UnconfinedTestDispatcher()
+        repository = YouTubeRepository(network, testDispatcher)
     }
 
     @After
@@ -95,6 +101,50 @@ class YouTubeRepositoryTest {
         repository.search("cache-test", SearchFilter.VIDEOS)
 
         assertEquals(requestCountAfterFirst, server.requestCount)
+    }
+
+    @Test
+    fun search_result_isPersistedAndServedWithoutNewRequest() = runTest {
+        val dao = FakeSearchCacheDao()
+        repository = YouTubeRepository(network, testDispatcher, searchCacheDao = dao)
+        server.enqueue(jsonResponse(SEARCH_PAYLOAD))
+        server.enqueue(jsonResponse(VIDEOS_PAYLOAD))
+
+        val first = repository.search("persist-test", SearchFilter.VIDEOS)
+        assertTrue(first is AppResult.Success)
+        assertEquals(null, (first as AppResult.Success).data.cachedAt)
+        assertEquals(1, dao.store.size)
+
+        // Nouvelle instance du repository = cache mémoire vide (redémarrage),
+        // même cache persistant (Room) partagé.
+        val restarted = YouTubeRepository(network, testDispatcher, searchCacheDao = dao)
+        val requestCount = server.requestCount
+
+        val second = restarted.search("persist-test", SearchFilter.VIDEOS)
+
+        assertTrue(second is AppResult.Success)
+        assertEquals(requestCount, server.requestCount)
+        assertNotNull((second as AppResult.Success).data.cachedAt)
+        assertNotNull(restarted.cachedSearchPage("persist-test", SearchFilter.VIDEOS))
+    }
+
+    /** Double en mémoire de [SearchCacheDao] (Room) pour les tests. */
+    private class FakeSearchCacheDao : SearchCacheDao {
+        val store = linkedMapOf<String, SearchCacheEntity>()
+
+        override suspend fun get(cacheKey: String): SearchCacheEntity? = store[cacheKey]
+
+        override suspend fun put(entity: SearchCacheEntity) {
+            store[entity.cacheKey] = entity
+        }
+
+        override suspend fun prune(keep: Int) {
+            while (store.size > keep) store.remove(store.keys.first())
+        }
+
+        override suspend fun clear() {
+            store.clear()
+        }
     }
 
     private fun jsonResponse(body: String, code: Int = 200) = MockResponse()

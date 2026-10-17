@@ -42,7 +42,11 @@ class AppContainer(context: Context) {
     }
 
     val youtubeRepository: YouTubeRepository by lazy {
-        YouTubeRepository(network, regionProvider = { preferences.regionCode })
+        YouTubeRepository(
+            network,
+            searchCacheDao = database.searchCacheDao(),
+            regionProvider = { preferences.regionCode }
+        )
     }
 
     val libraryRepository: LibraryRepository by lazy {
