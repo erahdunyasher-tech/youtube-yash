@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>YT-API — test de recherche</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px; background: #0b0b11; color: #cbd5e1;
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 22px; color: #fff; margin: 0 0 4px; letter-spacing: -.02em; }
+  .sub { color: #64748b; font-size: 13px; margin-bottom: 20px; }
+  form { display: flex; gap: 8px; margin-bottom: 8px; }
+  input[type=search] {
+    flex: 1; padding: 11px 14px; border-radius: 10px; border: 1px solid #262634;
+    background: #101018; color: #fff; font-size: 15px; outline: none;
+  }
+  input[type=search]:focus { border-color: #ff3b30; }
+  button {
+    padding: 11px 18px; border: 0; border-radius: 10px; background: #e0211a;
+    color: #fff; font-weight: 600; cursor: pointer;
+  }
+  button:hover { background: #ff3b30; }
+  .row { display: flex; gap: 6px; align-items: center; color: #64748b; font-size: 13px; }
+  .row label { display: flex; gap: 6px; align-items: center; }
+  #status { min-height: 20px; font-size: 13px; color: #94a3b8; margin: 14px 0 6px; }
+  ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+  li {
+    display: flex; gap: 14px; padding: 10px; border: 1px solid #1c1c27;
+    border-radius: 12px; background: #101018;
+  }
+  li img { width: 132px; height: 74px; object-fit: cover; border-radius: 8px; background: #1c1c27; }
+  .t { color: #fff; font-weight: 600; margin-bottom: 4px; }
+  .m { color: #94a3b8; font-size: 13px; }
+  .err { color: #ff6b60; }
+  a { color: #ff6b60; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>YT-API — test de recherche</h1>
+  <p class="sub">Métadonnées uniquement : pas de flux, pas de téléchargement. <a href="/docs">/docs</a> · <a href="/health">/health</a></p>
+
+  <form id="f">
+    <input type="search" id="q" placeholder="Rechercher sur YouTube…" value="lofi hip hop" autofocus />
+    <button type="submit">Rechercher</button>
+  </form>
+  <div class="row">
+    <label>Nombre <input type="number" id="n" value="10" min="1" max="50" style="width:70px;background:#101018;border:1px solid #262634;color:#fff;border-radius:8px;padding:6px"></label>
+    <span id="meta"></span>
+  </div>
+
+  <div id="status"></div>
+  <ul id="out"></ul>
+</div>
+
+<script>
+const f = document.getElementById('f'), out = document.getElementById('out'),
+      status = document.getElementById('status'), meta = document.getElementById('meta');
+
+const fmtDur = s => s == null ? '—' : (s >= 3600 ? `${Math.floor(s/3600)}:${String(Math.floor(s%3600/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}` : `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`);
+const fmtViews = v => v == null ? '—' : v.toLocaleString('fr-FR') + ' vues';
+
+async function run(e) {
+  e && e.preventDefault();
+  const q = document.getElementById('q').value.trim();
+  if (!q) return;
+  status.textContent = 'Recherche en cours…'; status.className = ''; out.innerHTML = '';
+  try {
+    const t0 = performance.now();
+    const r = await fetch(`/search?q=${encodeURIComponent(q)}&n=${document.getElementById('n').value}`);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const data = await r.json();
+    meta.textContent = `${data.results.length} résultat(s) · ${Math.round(performance.now()-t0)} ms · cache: ${data.cached}`;
+    if (!data.results.length) { status.textContent = 'Aucun résultat.'; return; }
+    status.textContent = '';
+    out.innerHTML = data.results.map(v => `
+      <li>
+        <img src="${v.thumbnail || ''}" alt="" loading="lazy"
+             onerror="this.style.visibility='hidden'">
+        <div>
+          <div class="t"><a href="${v.url}" target="_blank" rel="noopener">${(v.title||'').replace(/</g,'&lt;')}</a></div>
+          <div class="m">${(v.channel||'?').replace(/</g,'&lt;')} · ${fmtDur(v.duration)} · ${fmtViews(v.views)}</div>
+          <div class="m" style="color:#64748b">${v.url}</div>
+        </div>
+      </li>`).join('');
+  } catch (err) {
+    status.innerHTML = `<span class="err">Erreur : ${err.message}</span>`;
+  }
+}
+f.addEventListener('submit', run);
+run();
+</script>
+</body>
+</html>
