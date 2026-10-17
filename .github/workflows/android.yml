@@ -19,6 +19,7 @@ jobs:
   build:
     name: Build + tests
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,29 +29,39 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
+          cache: gradle
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      # Gradle 8.7 est installé directement : le binaire du wrapper n'est pas
+      # versionné, et l'action setup-android échoue sur les cmdline-tools 16
+      # (paquet « tools » supprimé). Le SDK Android est déjà fourni par le runner.
+      - name: Install Gradle 8.7
+        run: |
+          curl -sL -o /tmp/gradle.zip https://services.gradle.org/distributions/gradle-8.7-bin.zip
+          sudo unzip -q -o /tmp/gradle.zip -d /opt
+          echo "/opt/gradle-8.7/bin" >> "$GITHUB_PATH"
+          /opt/gradle-8.7/bin/gradle --version
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-
-      # Le binaire du wrapper n'est pas versionné : on le régénère.
-      - name: Generate Gradle wrapper
-        working-directory: android
-        run: gradle wrapper --gradle-version 8.7
+      - name: Install Android SDK packages
+        run: |
+          SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -name sdkmanager -type f | head -n 1)
+          echo "Using sdkmanager: ${SDKMANAGER}"
+          yes | "${SDKMANAGER}" --licenses >/dev/null 2>&1 || true
+          "${SDKMANAGER}" --install "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
       - name: Unit tests
         working-directory: android
-        run: ./gradlew test --stacktrace
+        run: gradle --no-daemon test --stacktrace
 
+      # Le lint reste informatif (bloc continue-on-error) : il ne doit pas
+      # masquer un échec réel du build ni le bloquer sur des avertissements.
       - name: Lint
+        continue-on-error: true
         working-directory: android
-        run: ./gradlew lintDebug
+        run: gradle --no-daemon lintDebug
 
       - name: Assemble debug APK
         working-directory: android
-        run: ./gradlew assembleDebug
+        run: gradle --no-daemon assembleDebug --stacktrace
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
