@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">YouTube Libre</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Accueil</string>
+    <string name="nav_search">Recherche</string>
+    <string name="nav_library">Bibliothèque</string>
+    <string name="nav_settings">Réglages</string>
+    <string name="nav_watch">Lecture</string>
+    <string name="nav_channel">Chaîne</string>
+
+    <!-- Catégories -->
+    <string name="category_all">Tout</string>
+    <string name="category_music">Musique</string>
+    <string name="category_games">Jeux</string>
+    <string name="category_movies">Films</string>
+    <string name="category_news">Actualités</string>
+    <string name="category_sports">Sports</string>
+    <string name="category_learning">Apprentissage</string>
+
+    <!-- Filtres de recherche -->
+    <string name="filter_all">Tout</string>
+    <string name="filter_videos">Vidéos</string>
+    <string name="filter_channels">Chaînes</string>
+
+    <!-- Recherche -->
+    <string name="search_hint">Rechercher sur YouTube</string>
+    <string name="search_empty">Aucun résultat pour cette recherche.</string>
+
+    <!-- Actions -->
+    <string name="action_retry">Réessayer</string>
+    <string name="action_search">Rechercher</string>
+    <string name="action_load_more">Charger plus</string>
+    <string name="action_clear">Vider la liste</string>
+    <string name="action_save">Enregistrer</string>
+    <string name="action_share">Partager</string>
+    <string name="action_pip">Image dans l\'image</string>
+    <string name="action_open_youtube">Ouvrir dans YouTube</string>
+    <string name="action_description">Description</string>
+    <string name="action_add_favorite">Ajouter aux favoris</string>
+    <string name="action_remove_favorite">Retirer des favoris</string>
+
+    <!-- États -->
+    <string name="state_error_title">Impossible de charger le contenu</string>
+    <string name="state_empty_title">Rien à afficher</string>
+    <string name="state_empty_message">Aucune vidéo disponible pour le moment.</string>
+
+    <!-- Bibliothèque -->
+    <string name="library_tab_favorites">Favoris</string>
+    <string name="library_tab_history">Historique</string>
+    <string name="library_empty_favorites">Aucun favori</string>
+    <string name="library_empty_favorites_hint">Ajoutez une vidéo à vos favoris depuis l\'écran de lecture.</string>
+    <string name="library_empty_history">Historique vide</string>
+    <string name="library_empty_history_hint">Les vidéos que vous regardez apparaissent ici, uniquement sur cet appareil.</string>
+
+    <!-- Lecture -->
+    <string name="watch_related">Vidéos similaires</string>
+    <string name="share_text">Regarde cette vidéo : %1$s</string>
+
+    <!-- Réglages -->
+    <string name="settings_api_section">Clé API YouTube Data API v3</string>
+    <string name="settings_api_hint">Collez votre clé API personnelle (stockée chiffrée sur l\'appareil, via le keystore Android). Vous pouvez aussi utiliser un proxy serveur : la clé reste alors côté serveur.</string>
+    <string name="settings_api_key_label">Clé API</string>
+    <string name="settings_key_saved">Clé API enregistrée sur cet appareil.</string>
+    <string name="settings_key_cleared">Clé API supprimée.</string>
+    <string name="settings_proxy_section">Proxy serveur (optionnel)</string>
+    <string name="settings_proxy_hint">URL de base d\'un proxy auto-hébergé exposant la YouTube Data API. La clé API reste côté serveur (variable d\'environnement).</string>
+    <string name="settings_proxy_label">URL du proxy</string>
+    <string name="settings_proxy_saved">Proxy enregistré : la clé API n\'est plus envoyée depuis l\'appareil.</string>
+    <string name="settings_proxy_cleared">Proxy supprimé : l\'application utilise l\'API YouTube directement.</string>
+    <string name="settings_region_section">Région des tendances</string>
+    <string name="settings_region_label">Code pays (ex. FR, US)</string>
+    <string name="settings_region_saved">Région enregistrée.</string>
+    <string name="settings_theme_section">Thème</string>
+    <string name="settings_theme_system">Système</string>
+    <string name="settings_theme_light">Clair</string>
+    <string name="settings_theme_dark">Sombre</string>
+    <string name="settings_history_section">Historique</string>
+    <string name="settings_history_label">Nombre maximum de vidéos conservées</string>
+    <string name="settings_history_saved">Préférence enregistrée.</string>
+    <string name="settings_test_connection">Tester la connexion à l\'API</string>
+    <string name="settings_test_running">Test en cours…</string>
+    <string name="settings_data_section">Données locales</string>
+    <string name="settings_clear_favorites">Vider les favoris</string>
+    <string name="settings_clear_history">Vider l\'historique</string>
+    <string name="settings_clear_recent">Effacer les recherches récentes</string>
+    <string name="settings_about_section">À propos et limites</string>
+    <string name="settings_about_text">YouTube Libre est une application tierce, gratuite et sans publicité ajoutée. Elle affiche les vidéos via le lecteur officiel intégré par YouTube, qui peut diffuser les publicités et les règles de diffusion de YouTube (disponibilité régionale, âge, droits). Aucune vidéo n\'est téléchargée, aucun flux n\'est extrait, aucun contournement de publicité n\'est effectué. La lecture en arrière-plan dépend du lecteur officiel et du système : elle n\'est pas garantie. Favoris et historique restent sur cet appareil. Aucune donnée personnelle ni télémétrie n\'est collectée.</string>
+
+    <!-- Contenus -->
+    <string name="item_thumbnail">Miniature de la vidéo</string>
+    <string name="item_avatar">Photo de la chaîne</string>
+    <string name="channel_banner">Bannière de la chaîne</string>
+</resources>

@@ -1,0 +1,50 @@
+# ---------------------------------------------------------------------------
+# Android / Gradle
+# ---------------------------------------------------------------------------
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/keystore.properties
+android/gradle-app.setting
+.gradle/
+build/
+captures/
+.cxx/
+*.iml
+
+# Secrets de signature : NE JAMAIS versionner
+*.jks
+*.keystore
+*.p12
+*.pem
+keystore.properties
+google-services.json
+secrets.properties
+*.env
+.env
+.env.*
+
+# APK / bundles : distribués via les GitHub Releases
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# ---------------------------------------------------------------------------
+# Web (site de documentation)
+# ---------------------------------------------------------------------------
+node_modules/
+dist/
+.vite/
+npm-debug.log*
+yarn-error.log*
+
+# ---------------------------------------------------------------------------
+# IDE / OS
+# ---------------------------------------------------------------------------
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db

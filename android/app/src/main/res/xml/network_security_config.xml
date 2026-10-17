@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  HTTPS obligatoire pour toutes les communications (API YouTube, proxy éventuel).
+  Le trafic en clair n'est autorisé que vers la machine hôte de développement
+  (10.0.2.2 = localhost depuis l'émulateur) pour tester un proxy local.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">10.0.2.2</domain>
+        <domain includeSubdomains="false">localhost</domain>
+    </domain-config>
+</network-security-config>

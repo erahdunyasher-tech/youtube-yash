@@ -1,0 +1,11 @@
+package com.ytlibre.app.ui.common
+
+/**
+ * États d'écran réutilisés par les ViewModels.
+ */
+sealed interface UiState<out T> {
+    data object Idle : UiState<Nothing>
+    data object Loading : UiState<Nothing>
+    data class Success<T>(val data: T) : UiState<T>
+    data class Error(val error: AppError) : UiState<Nothing>
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ytl_primary">#FFB4AB</color>
+    <color name="ytl_on_primary">#690005</color>
+    <color name="ytl_primary_container">#93000A</color>
+    <color name="ytl_on_primary_container">#FFDAD6</color>
+    <color name="ytl_secondary">#E7BDB8</color>
+    <color name="ytl_background">#201A19</color>
+    <color name="ytl_surface">#201A19</color>
+    <color name="ytl_on_surface">#EDE0DE</color>
+    <color name="ytl_outline">#A08C8A</color>
+    <color name="ytl_badge_background">#CC000000</color>
+    <color name="ytl_placeholder">#3A3433</color>
+</resources>

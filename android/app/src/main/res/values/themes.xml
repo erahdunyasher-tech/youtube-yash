@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Thème Material 3 : clair et sombre gérés par le qualifier -night. -->
+    <style name="Theme.YouTubeLibre" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/ytl_primary</item>
+        <item name="colorOnPrimary">@color/ytl_on_primary</item>
+        <item name="colorPrimaryContainer">@color/ytl_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/ytl_on_primary_container</item>
+        <item name="colorSecondary">@color/ytl_secondary</item>
+        <item name="android:colorBackground">@color/ytl_background</item>
+        <item name="colorSurface">@color/ytl_surface</item>
+        <item name="colorOnSurface">@color/ytl_on_surface</item>
+        <item name="colorOutline">@color/ytl_outline</item>
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+    </style>
+</resources>

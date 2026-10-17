@@ -1,0 +1,60 @@
+name: Rapport de bug
+description: Signaler un problème reproductible dans l'application
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Version de l'application
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Appareil et version d'Android
+      placeholder: "Pixel 8 — Android 14"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Domaine concerné
+      options:
+        - Recherche
+        - Lecture (lecteur intégré)
+        - Picture-in-Picture
+        - Favoris / historique
+        - Réglages / clé API
+        - Thème
+        - Autre
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Étapes de reproduction
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Message d'erreur / logs
+      render: text
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Vérifications
+      options:
+        - label: Aucune clé API réelle n'apparaît dans ma description
+          required: true
+        - label: Le problème est reproductible sur un appareil sans configuration particulière
