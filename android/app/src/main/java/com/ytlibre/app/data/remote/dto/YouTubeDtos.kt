@@ -38,6 +38,12 @@ data class SnippetDto(
     @SerializedName("thumbnails") val thumbnails: ThumbnailsDto? = null
 )
 
+data class ThumbnailDto(
+    @SerializedName("url") val url: String? = null,
+    @SerializedName("width") val width: Int? = null,
+    @SerializedName("height") val height: Int? = null
+)
+
 data class ThumbnailsDto(
     @SerializedName("default") val default: ThumbnailDto? = null,
     @SerializedName("medium") val medium: ThumbnailDto? = null,

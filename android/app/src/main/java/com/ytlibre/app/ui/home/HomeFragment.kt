@@ -18,6 +18,7 @@ import com.ytlibre.app.data.model.ContentCategory
 import com.ytlibre.app.data.model.Video
 import com.ytlibre.app.databinding.FragmentHomeBinding
 import com.ytlibre.app.ui.common.UiState
+import com.ytlibre.app.ui.common.VideoAdapter
 import com.ytlibre.app.ui.watch.WatchFragment
 import kotlinx.coroutines.launch
 
