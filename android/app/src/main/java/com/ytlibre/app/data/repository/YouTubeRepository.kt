@@ -1,6 +1,5 @@
 package com.ytlibre.app.data.repository
 
-import com.google.gson.Gson
 import com.ytlibre.app.data.local.SearchCacheDao
 import com.ytlibre.app.data.local.SearchCacheEntity
 import com.ytlibre.app.data.model.Channel
@@ -40,7 +39,6 @@ class YouTubeRepository(
     private data class CacheEntry<T>(val value: T, val expiresAt: Long)
 
     private val memoryCache = ConcurrentHashMap<String, CacheEntry<Any>>()
-    private val gson = Gson()
 
     // -----------------------------------------------------------------------
     // API publique
@@ -116,15 +114,16 @@ class YouTubeRepository(
     private suspend fun readPersistedPage(cacheKey: String): Pair<SearchPage, Long>? {
         val dao = searchCacheDao ?: return null
         val entity = runCatching { dao.get(cacheKey) }.getOrNull() ?: return null
-        val page = runCatching { gson.fromJson(entity.payload, SearchPage::class.java) }.getOrNull()
-            ?: return null
+        // SearchPageCodec (et non Gson brut) : `items` est une interface scellée
+        // que Gson sait écrire mais pas relire (« Interfaces can't be instantiated! »).
+        val page = SearchPageCodec.decode(entity.payload) ?: return null
         return page to entity.createdAt
     }
 
     private suspend fun persistPage(cacheKey: String, page: SearchPage) {
         val dao = searchCacheDao ?: return
         runCatching {
-            dao.put(SearchCacheEntity(cacheKey, gson.toJson(page), System.currentTimeMillis()))
+            dao.put(SearchCacheEntity(cacheKey, SearchPageCodec.encode(page), System.currentTimeMillis()))
             dao.prune(MAX_SEARCH_CACHE_ENTRIES)
         }
     }
