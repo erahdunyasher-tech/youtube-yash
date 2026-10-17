@@ -90,10 +90,13 @@ interface HistoryDao {
 // Base
 // ---------------------------------------------------------------------------
 
+// exportSchema = false : pas d'export de schéma (aucune migration à versionner
+// à ce stade — fallbackToDestructiveMigration). Cela évite surtout la course
+// lecture/écriture du fichier de schéma entre les variantes debug/release.
 @Database(
     entities = [FavoriteEntity::class, HistoryEntity::class],
     version = 1,
-    exportSchema = true
+    exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun favoriteDao(): FavoriteDao
