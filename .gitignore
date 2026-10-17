@@ -54,3 +54,8 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+
+# Clés API : seul le gabarit est versionné
+.env
+.env.*
+!.env.example

@@ -1,4 +1,7 @@
 fastapi
 uvicorn
-yt-dlp
+httpx
 python-dotenv
+
+# Optionnel : uniquement pour l'outil legacy tools/ytsearch.py
+yt-dlp
