@@ -9,9 +9,8 @@ mode sombre et Picture-in-Picture.
 > aucun contournement des règles de YouTube.** Les publicités éventuellement
 > diffusées sont celles de YouTube, dans le lecteur officiel.
 
-<!-- Remplacez VOTRE-COMPTE par votre identifiant GitHub pour activer les badges. -->
-[![Build Android](https://github.com/VOTRE-COMPTE/youtube-libre/actions/workflows/android.yml/badge.svg)](https://github.com/VOTRE-COMPTE/youtube-libre/actions/workflows/android.yml)
-[![Deploy documentation](https://github.com/VOTRE-COMPTE/youtube-libre/actions/workflows/web.yml/badge.svg)](https://github.com/VOTRE-COMPTE/youtube-libre/actions/workflows/web.yml)
+[![Build Android](https://github.com/erahdunyasher-tech/youtube-yash/actions/workflows/android.yml/badge.svg)](https://github.com/erahdunyasher-tech/youtube-yash/actions/workflows/android.yml)
+[![Deploy documentation](https://github.com/erahdunyasher-tech/youtube-yash/actions/workflows/web.yml/badge.svg)](https://github.com/erahdunyasher-tech/youtube-yash/actions/workflows/web.yml)
 [![Licence MIT](https://img.shields.io/badge/Licence-MIT-16a34a.svg)](LICENSE)
 [![Android 8.0+](https://img.shields.io/badge/Android-8.0%2B-3DDC84.svg)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.9.24-7F52FF.svg)](https://kotlinlang.org)
@@ -271,7 +270,7 @@ dépôt GitHub (via `gh` ou l’API) et push. Le jeton est lu au terminal et
 n’est **jamais** écrit dans le dépôt.
 
 ```bash
-./publish-github.sh youtube-libre public
+./publish-github.sh youtube-yash public
 ```
 
 Équivalent manuel :
@@ -281,7 +280,7 @@ n’est **jamais** écrit dans le dépôt.
 git init -b main
 git add .
 git commit -m "feat: YouTube Libre v1.0.0 — app Android Kotlin (Material 3) + docs"
-git remote add origin https://github.com/<VOTRE-COMPTE>/youtube-libre.git
+git remote add origin https://github.com/erahdunyasher-tech/youtube-yash.git
 git push -u origin main
 ```
 

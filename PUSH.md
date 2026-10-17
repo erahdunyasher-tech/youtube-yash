@@ -49,7 +49,7 @@ topics, licence et activation de GitHub Pages.
 Sur le poste où se trouve le projet :
 
 ```bash
-cd /chemin/vers/youtube-libre
+cd /chemin/vers/youtube-yash
 
 # 1. Identité
 git config user.name  "Votre Nom"

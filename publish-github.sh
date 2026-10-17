@@ -16,7 +16,7 @@
 # =============================================================================
 set -euo pipefail
 
-REPO_NAME="${1:-youtube-libre}"
+REPO_NAME="${1:-youtube-yash}"
 VISIBILITY="${2:-public}"
 BRANCH="main"
 DESCRIPTION="YouTube Libre — application Android gratuite (Kotlin, Material 3) : recherche via la YouTube Data API v3, lecteur officiel intégré, favoris et historique locaux."
