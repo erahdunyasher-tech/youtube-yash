@@ -48,3 +48,9 @@ yarn-error.log*
 *.swp
 .DS_Store
 Thumbs.db
+
+# Python (ytapi)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
